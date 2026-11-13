@@ -352,6 +352,8 @@ void Lab6::CreateFramebuffer(int width, int height)
     glGenFramebuffers(1, &framebuffer_object);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_object);
 
+    glGenTextures(1, &color_texture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, color_texture);
 
     // TODO(student): Generate and bind the color texture
     for (unsigned int face = 0; face < 6; face++) {
@@ -361,11 +363,6 @@ void Lab6::CreateFramebuffer(int width, int height)
 
 
     // TODO(student): Initialize the color textures
-    glGenTextures(1, &color_texture);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, color_texture);
-
-
-
     if (color_texture) {
         //cubemap params
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
