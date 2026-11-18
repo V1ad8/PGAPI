@@ -17,16 +17,18 @@ layout(location = 0) out vec4 out_color;
 vec3 myReflect()
 {
     // TODO(student): Compute the reflection color value
-    return vec3(0.5);
-
+    vec3 incident = normalize(world_position - camera_position);
+    vec3 reflection_direction = reflect(incident, normalize(world_normal));
+    return texture(texture_cubemap, reflection_direction).rgb;
 }
 
 
 vec3 myRefract(float refractive_index)
 {
     // TODO(student): Compute the refraction color value
-    return vec3(0.5);
-
+    vec3 incident = normalize(world_position - camera_position);
+    vec3 refraction_direction = refract(incident, normalize(world_normal), 1.0 / refractive_index);
+    return texture(texture_cubemap, refraction_direction).rgb;
 }
 
 
