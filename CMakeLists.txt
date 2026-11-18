@@ -77,6 +77,7 @@ file(GLOB_RECURSE GFXF_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/src/components/*.c*
     ${CMAKE_CURRENT_LIST_DIR}/src/core/*.c*
     ${CMAKE_CURRENT_LIST_DIR}/src/utils/*.c*
+    ${CMAKE_CURRENT_LIST_DIR}/src/hw1/*.c*
     #
     ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
     #
@@ -91,6 +92,7 @@ file(GLOB_RECURSE GFXF_HEADERS_PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/components/*.h*
     ${CMAKE_CURRENT_LIST_DIR}/src/core/*.h*
     ${CMAKE_CURRENT_LIST_DIR}/src/utils/*.h*
+    ${CMAKE_CURRENT_LIST_DIR}/src/hw1/*.h*
     #
     ${CMAKE_CURRENT_LIST_DIR}/res/*.glsl
     #
@@ -101,6 +103,7 @@ file(GLOB_RECURSE GFXF_HEADERS_PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/lab_${SUFFIX_LAB_M1}/*.glsl
     ${CMAKE_CURRENT_LIST_DIR}/src/lab_${SUFFIX_LAB_M2}/*.glsl
     ${CMAKE_CURRENT_LIST_DIR}/src/lab_${SUFFIX_LAB_EXTRA}/*.glsl
+    ${CMAKE_CURRENT_LIST_DIR}/src/hw1/*.glsl
 )
 
 
