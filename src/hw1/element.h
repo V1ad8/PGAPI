@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iomanip>   // for std::setw, std::setfill
+#include <iomanip>
 #include <filesystem>
 #include "components/simple_scene.h"
 #include "components/transform.h"
@@ -28,6 +28,8 @@ struct light_t {
 struct AdditionalParams {
 	float material_ka, material_ke, material_kd, material_ks, material_shininess;
 	glm::vec3 color;
+
+	int instances;
 };
 
 class Element{
@@ -44,7 +46,7 @@ class Element{
 		baseMatrix = glm::scale(baseMatrix, aScale);
 	}
 
-	~Element()
+	virtual ~Element()
 	{
 	}
 
@@ -54,7 +56,7 @@ class Element{
 	gfxc::Camera *camera;
 
   protected:
-	void RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatrix, Texture2D *texture, AdditionalParams *param);
+	void RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatrix, Texture2D *texture, AdditionalParams *param = nullptr);
 
 	glm::mat4 baseMatrix;
 	AdditionalParams params;

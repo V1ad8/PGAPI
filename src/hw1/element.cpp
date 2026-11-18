@@ -6,33 +6,25 @@ using namespace std;
 light_t Element::light_sources[MAX_LIGHTS];
 int Element::num_lights = 0;
 
-void Element::RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatrix, Texture2D *texture, AdditionalParams *param = nullptr)
+void Element::RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatrix, Texture2D *texture, AdditionalParams *param)
 {
 	if (!mesh || !shader || !shader->GetProgramID())
 		return;
 
-	// Render an object using the specified shader and the specified position
 	glUseProgram(shader->program);
 
-	// Bind model matrix
 	GLint loc_model_matrix = glGetUniformLocation(shader->program, "Model");
 	glUniformMatrix4fv(loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-	// Bind view matrix
 	glm::mat4 viewMatrix = camera->GetViewMatrix();
 	int loc_view_matrix = glGetUniformLocation(shader->program, "View");
 	glUniformMatrix4fv(loc_view_matrix, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-	// Bind projection matrix
 	glm::mat4 projectionMatrix = camera->GetProjectionMatrix();
 	int loc_projection_matrix = glGetUniformLocation(shader->program, "Projection");
 	glUniformMatrix4fv(loc_projection_matrix, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 	if (texture) {
-		// Do these:
-		// - activate texture location 0
-		// - bind the texture ID
-		// - send theuniform value
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture->GetTextureID());
 		glUniform1i(glGetUniformLocation(shader->program, "texture"), 0);
@@ -91,5 +83,10 @@ void Element::RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatri
 
 	// Draw the object
 	glBindVertexArray(mesh->GetBuffers()->m_VAO);
-	glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_INT, 0);
+
+	if (param && param->instances > 1)
+		glDrawElementsInstanced(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()),GL_UNSIGNED_INT, (void *)0, param->instances);
+	else
+		glDrawElements(mesh->GetDrawMode(), static_cast<int>(mesh->indices.size()), GL_UNSIGNED_INT, 0);
+
 }

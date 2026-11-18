@@ -18,10 +18,22 @@ Game::~Game()
 
 void Game::Init()
 {
-	Element *el;
+	glEnable(GL_DEPTH_TEST);
 
-	glm::vec3 position(-4.5f, 4.0f, 6.0f);
-	glm::vec3 target(0.0f, 1.0f, 0.0f);
+	// Grid of buildings. Spacing (7) > 2 * max radius (2.2) => no overlaps.
+	// Later you will replace this with placement based on your street layout.
+	const float spacing = 7.0f;
+	int n = 0;
+	for (int gx = -2; gx <= 2; gx++) {
+		for (int gz = -2; gz <= 2; gz++) {
+			glm::vec3 pos(gx * spacing, 0, gz * spacing);
+			elements.push_back(new Building(GetSceneCamera(), pos, glm::vec3(0), glm::vec3(1)));
+			n++;
+		}
+	}
+
+	glm::vec3 position(-20.0f, 16.0f, 26.0f);
+	glm::vec3 target(0.0f, 5.0f, 0.0f);
 	glm::vec3 up(0.0f, 1.0f, 0.0f);
 
 	glm::mat4 view = glm::lookAt(position, target, up);
@@ -50,7 +62,7 @@ void Game::Update(float deltaTimeSeconds)
 
 void Game::FrameEnd()
 {
-	//DrawCoordinateSystem();
+	DrawCoordinateSystem();
 }
 
 /*
