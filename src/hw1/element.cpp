@@ -3,8 +3,18 @@
 using namespace hw1;
 using namespace std;
 
-light_t Element::light_sources[MAX_LIGHTS];
-int Element::num_lights = 0;
+std::vector<light_t> Element::lights;
+
+Shader *Element::MakeShader(const char *name, const char *dir, bool geometry)
+{
+	Shader *s = new Shader(name);
+	s->AddShader(PATH_JOIN(SOURCE_PATH::HW1, "shaders", dir, "VertexShader.glsl"), GL_VERTEX_SHADER);
+	if (geometry)
+		s->AddShader(PATH_JOIN(SOURCE_PATH::HW1, "shaders", dir, "GeometryShader.glsl"), GL_GEOMETRY_SHADER);
+	s->AddShader(PATH_JOIN(SOURCE_PATH::HW1, "shaders", dir, "FragmentShader.glsl"), GL_FRAGMENT_SHADER);
+	s->CreateAndLink();
+	return s;
+}
 
 void Element::RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatrix, Texture2D *texture, AdditionalParams *param)
 {
@@ -12,9 +22,10 @@ void Element::RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatri
 		return;
 
 	glUseProgram(shader->program);
+	glm::mat4 fullMatrix = baseMatrix * modelMatrix;
 
 	GLint loc_model_matrix = glGetUniformLocation(shader->program, "Model");
-	glUniformMatrix4fv(loc_model_matrix, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+	glUniformMatrix4fv(loc_model_matrix, 1, GL_FALSE, glm::value_ptr(fullMatrix));
 
 	glm::mat4 viewMatrix = camera->GetViewMatrix();
 	int loc_view_matrix = glGetUniformLocation(shader->program, "View");
@@ -62,20 +73,20 @@ void Element::RenderMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatri
 		if (color != -1)
 			glUniform3f(color, param->color.x, param->color.y, param->color.z);
 
-		int light_num_location = glGetUniformLocation(shader->program, "num_lights");
-		glUniform1i(light_num_location, num_lights);
+		//int light_num_location = glGetUniformLocation(shader->program, "num_lights");
+		//glUniform1i(light_num_location, num_lights);
 
-		for (int i = 0; i < MAX_LIGHTS; i++) {
-			std::string base = "lights[" + std::to_string(i) + "].";
+		//for (int i = 0; i < MAX_LIGHTS; i++) {
+		//	std::string base = "lights[" + std::to_string(i) + "].";
 
-			glUniform1i(glGetUniformLocation(shader->program, (base + "spotlight").c_str()), light_sources[i].spotlight);
-			glUniform3fv(glGetUniformLocation(shader->program, (base + "position").c_str()), 1, glm::value_ptr(light_sources[i].position));
-			glUniform3fv(glGetUniformLocation(shader->program, (base + "color").c_str()), 1, glm::value_ptr(light_sources[i].color));
-			glUniform3fv(glGetUniformLocation(shader->program, (base + "direction").c_str()), 1, glm::value_ptr(light_sources[i].direction));
-			glUniform1f(glGetUniformLocation(shader->program, (base + "cut_off_angle").c_str()), light_sources[i].cut_off_angle);
-			glUniform1f(glGetUniformLocation(shader->program, (base + "intensity").c_str()), light_sources[i].intensity);
-			glUniform1i(glGetUniformLocation(shader->program, (base + "cookie").c_str()), light_sources[i].cookie);
-		}
+		//	glUniform1i(glGetUniformLocation(shader->program, (base + "spotlight").c_str()), light_sources[i].spotlight);
+		//	glUniform3fv(glGetUniformLocation(shader->program, (base + "position").c_str()), 1, glm::value_ptr(light_sources[i].position));
+		//	glUniform3fv(glGetUniformLocation(shader->program, (base + "color").c_str()), 1, glm::value_ptr(light_sources[i].color));
+		//	glUniform3fv(glGetUniformLocation(shader->program, (base + "direction").c_str()), 1, glm::value_ptr(light_sources[i].direction));
+		//	glUniform1f(glGetUniformLocation(shader->program, (base + "cut_off_angle").c_str()), light_sources[i].cut_off_angle);
+		//	glUniform1f(glGetUniformLocation(shader->program, (base + "intensity").c_str()), light_sources[i].intensity);
+		//	glUniform1i(glGetUniformLocation(shader->program, (base + "cookie").c_str()), light_sources[i].cookie);
+		//}
 	}
 
 	std::string shaderName = shader->GetName();
